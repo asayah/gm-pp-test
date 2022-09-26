@@ -1,6 +1,8 @@
 #!/bin/bash
 #set -e
 
+kind create cluster --name mgmt
+
 # note that the character '_' is an invalid value if you are replacing the defaults below
 mgmt_context=`kubectl config current-context`
 
@@ -31,3 +33,9 @@ echo "access argocd dashboard:"
 echo "kubectl port-forward svc/argocd-server -n argocd 9999:443 --context ${mgmt_context}"
 echo
 
+
+kubectl apply -f ./manifests/admin.yaml 
+
+./tools/wait-for-rollout.sh deployment istiod istio-system 30 ${mgmt_context}
+
+kubectl apply -f ./manifests/app.yaml
