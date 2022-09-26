@@ -1,0 +1,16 @@
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: wildcard
+  namespace: gloo-mesh
+spec:
+  importFrom:
+  - workspaces:
+    - name: '*'
+    resources:
+    - kind: ALL
+  exportTo:
+  - workspaces:
+    - name: '*'
+    resources:
+    - kind: ALL

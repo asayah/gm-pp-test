@@ -1,0 +1,76 @@
+apiVersion: admin.gloo.solo.io/v2
+kind: IstioLifecycleManager
+metadata:
+  name: istio-1-15-0
+  namespace: gloo-mesh
+spec:
+  revision: 1-15-0
+  clusters: 
+    - name: mgmt
+  installations:
+    - name: control-plane
+      istioOperatorSpec:
+        profile: minimal
+        meshConfig:
+          trustDomain: cluster2
+          accessLogFile: /dev/stdout
+          enableAutoMtls: true
+          defaultConfig:
+            envoyMetricsService:
+              address: enterprise-agent.gloo-mesh:9977
+            envoyAccessLogService:
+              address: enterprise-agent.gloo-mesh:9977
+            proxyMetadata:
+              ISTIO_META_DNS_CAPTURE: "true"
+              ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+              GLOO_MESH_CLUSTER_NAME: cluster2
+        tag: 1.15.0
+        hub: istio
+        components:
+          ingressGateways:
+            - name: istio-ingressgateway
+              enabled: false
+    - name: ingress-gateway
+      istioOperatorSpec:
+        profile: empty
+        tag: 1.15.0
+        hub: istio
+        components:
+          ingressGateways:
+            - name: istio-ingressgateway
+              namespace: istio-gateways
+              label:
+                topology.istio.io/network: network1
+              enabled: true
+              k8s:
+                env:
+                  # sni-dnat adds the clusters required for AUTO_PASSTHROUGH mode
+                  - name: ISTIO_META_ROUTER_MODE
+                    value: "sni-dnat"
+                  # traffic through this gateway should be routed inside the network
+                  - name: ISTIO_META_REQUESTED_NETWORK_VIEW
+                    value: network1
+                serviceAnnotations:
+                      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+                      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+                service:
+                  type: ClusterIP
+                  ports:
+                    - name: http2
+                      port: 80
+                      targetPort: 8080
+                    - name: https
+                      port: 443
+                      targetPort: 8443
+                    - name: tcp-status-port
+                      port: 15021
+                      targetPort: 15021
+                    - name: tls
+                      port: 15443
+                      targetPort: 15443
+                    - name: tcp-istiod
+                      port: 15012
+                      targetPort: 15012
+                    - name: tcp-webhook
+                      port: 15017
+                      targetPort: 15017

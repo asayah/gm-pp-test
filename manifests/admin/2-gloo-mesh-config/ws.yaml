@@ -1,0 +1,23 @@
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: wildcard
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+  - name: '*'
+    namespaces:
+    - name: '*'
+---
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: wildcard
+  namespace: gloo-mesh
+spec:
+  exportTo:
+  - workspaces:
+    - name: '*'
+  importFrom:
+  - workspaces:
+    - name: '*'

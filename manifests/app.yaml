@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-owner
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"  
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/asayah/gm-pp-test
+    targetRevision: HEAD
+    path: manifests/app-owner
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

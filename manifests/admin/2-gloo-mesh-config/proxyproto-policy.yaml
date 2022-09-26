@@ -1,0 +1,15 @@
+apiVersion: trafficcontrol.policy.gloo.solo.io/v2
+kind: ProxyProtocolPolicy
+metadata:
+  name: proxy-proto
+  namespace: istio-gateways
+spec:
+  applyToListeners:
+    - virtualGateway: 
+        namespace: north-south-gw
+        name: istio-gateways
+      port:
+        number: 80        
+  config:
+    enableProxyProtocol: true
+

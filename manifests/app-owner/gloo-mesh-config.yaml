@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-owner-gloo-mesh-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "23"  
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/asayah/gm-pp-test
+    targetRevision: HEAD
+    path: manifests/app-owner/2-gloo-mesh-config
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
