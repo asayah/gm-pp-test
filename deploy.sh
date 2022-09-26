@@ -2,7 +2,7 @@
 #set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
-mgmt_context="mgmt"
+mgmt_context=`kubectl config current-context`
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] ; then
