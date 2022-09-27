@@ -36,6 +36,6 @@ echo
 
 kubectl apply -f ./manifests/admin.yaml 
 
-./tools/wait-for-rollout.sh deployment istiod istio-system 30 ${mgmt_context}
+./tools/wait-for-rollout.sh deployment istiod-1-15-0 istio-system 30 ${mgmt_context}
 
 kubectl apply -f ./manifests/app.yaml
